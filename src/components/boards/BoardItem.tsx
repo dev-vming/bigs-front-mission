@@ -1,11 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import CategoryBadge from "@/components/common/CategoryBadge";
+
 
 interface BoardItemProps {
     id: number;
     title: string;
-    category: string;
+    category: "FREE" | "NOTICE" | "QNA" | "ETC";
     createdAt: string;
 }
 
@@ -30,9 +32,7 @@ export default function BoardItem({
         >
             {/* 카테고리 */}
             <span className="w-20 shrink-0">
-                <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-gray-500/10">
-                    {category}
-                </span>
+                <CategoryBadge category={category} />
             </span>
 
             {/* 제목 */}
