@@ -1,0 +1,12 @@
+export const metadata = {
+    title: "회원가입",
+};
+
+export default function SignupPage() {
+    return (
+        <div>
+            회원가입 페이지
+        </div>
+    );
+}
+
