@@ -1,23 +1,19 @@
-import './globals.css'
+import "./globals.css";
 
-import type { Metadata } from 'next';
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: {
-    default: 'BIGS Front Mission',
-    template: '%s | BIGS',
-  },
+    title: "BIGS Front Mission",
 };
 
-
 export default function RootLayout({
-  children,
+    children,
 }: {
-  children: React.ReactNode
+    children: React.ReactNode;
 }) {
-  return (
-    <html lang="ko">
-      <body>{children}</body>
-    </html>
-  )
+    return (
+        <html lang="ko">
+            <body>{children}</body>
+        </html>
+    );
 }

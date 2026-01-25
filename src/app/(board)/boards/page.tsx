@@ -1,10 +1,6 @@
 import BoardItem from "@/components/boards/BoardItem";
 import NewBoardButton from "@/components/boards/NewBoardButton";
 
-export const metadata = {
-    title: "게시판",
-};
-
 interface BoardItem {
     id: number;
     title: string;
