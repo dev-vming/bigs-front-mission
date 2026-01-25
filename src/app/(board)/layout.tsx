@@ -1,16 +1,27 @@
 "use client";
 
 import Header from "@/components/common/Header";
+import { getBoardTitleByPath } from "@/lib/board/getBoardTitleByPath";
+import { usePathname } from "next/navigation";
 
 export default function BoardLayout({
     children,
 }: {
     children: React.ReactNode;
-}) {
+    }) {
+    // 현재 path 이름
+    const pathname = usePathname();
+
+    // path 이름 기반 title
+    const title = getBoardTitleByPath(pathname);
+
     return (
         <div className="min-h-screen bg-white">
-            <Header />
-            <main className="max-w-5xl mx-auto px-4 py-6">{children}</main>
+            <Header title={title} />
+            <main className="max-w-5xl mx-auto px-4 py-6">
+                <h1 className="hidden md:block text-2xl font-bold mb-6">{title}</h1>
+                {children}
+            </main>
         </div>
     );
 }
