@@ -27,7 +27,7 @@ export default function BoardItem({
 
     return (
         <div
-            className="w-full px-4 py-3 flex items-center gap-4 border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
+            className="w-full py-3 flex items-center gap-4 border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
             onClick={handleClick}
         >
             {/* 카테고리 */}
