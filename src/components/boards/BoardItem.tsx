@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import CategoryBadge from "@/components/common/CategoryBadge";
+import CategoryBadge from "@/components/boards/CategoryBadge";
 
 
 interface BoardItemProps {
