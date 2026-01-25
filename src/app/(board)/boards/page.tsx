@@ -5,7 +5,14 @@ export const metadata = {
     title: "게시판",
 };
 
-const boards = [
+interface BoardItem {
+    id: number;
+    title: string;
+    category: "FREE" | "NOTICE" | "QNA" | "ETC";
+    createdAt: string;
+}
+
+const boards: BoardItem[] = [
     {
         id: 1,
         title: "Notice1",
@@ -16,6 +23,18 @@ const boards = [
         id: 2,
         title: "Free Post",
         category: "FREE",
+        createdAt: "2024-11-10T12:00:00.000Z",
+    },
+    {
+        id: 3,
+        title: "qna",
+        category: "QNA",
+        createdAt: "2024-11-11T09:29:45.721114",
+    },
+    {
+        id: 4,
+        title: "etc Post",
+        category: "ETC",
         createdAt: "2024-11-10T12:00:00.000Z",
     },
 ];
