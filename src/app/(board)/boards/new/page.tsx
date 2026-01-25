@@ -1,3 +1,5 @@
+import BoardForm from "@/components/boards/BoardForm";
+
 export const metadata = {
     title: "게시물 등록",
 };
@@ -5,7 +7,7 @@ export const metadata = {
 export default function BoardNewPage() {
     return (
         <div>
-            게시물 등록 페이지
+            <BoardForm />
         </div>
     );
 }
