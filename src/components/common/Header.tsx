@@ -2,23 +2,43 @@
 
 import { FaAngleLeft } from "react-icons/fa";
 import UserMenu from "./UserMenu";
+import { useModalStore } from "@/stores/modalStore";
+import { useRouter } from "next/navigation";
 
 interface HeaderProps {
     title: string;
 }
 
 export default function Header({ title }: HeaderProps) {
+    // 라우터
+    const router = useRouter();
     // title이 게시판인지 확인
     const isBoardList = title === "게시판";
     // title이 수정, 등록 상태인지 확인
     const isEditing = title === "게시물 수정" || title === "게시물 등록";
+    // 모달 상태 수정
+    const setModal = useModalStore((state) => state.setModal);
+    // 뒤로 가기 로직 처리
+    const handleBack = () => {
+        router.back();
+    };
 
     return (
         <header className="w-full border-b border-gray-200 bg-white">
             <div className="relative h-14 mx-auto px-4 flex items-center">
                 {/* 왼쪽 영역 (모바일 전용 뒤로가기) */}
                 {!isBoardList && (
-                    <button className="p-2 md:hidden">
+                    <button
+                        className="p-2 md:hidden cursor-pointer"
+                        onClick={() =>
+                            setModal({
+                                open: true,
+                                title: "알림",
+                                content: '작성을 취소하시겠습니까? \n 작성 중인 내용이 저장되지 않습니다.',
+                                onConfirm: handleBack,
+                            })
+                        }
+                    >
                         <FaAngleLeft className="w-5 h-5 text-gray-500" />
                     </button>
                 )}
@@ -43,7 +63,7 @@ export default function Header({ title }: HeaderProps) {
                             <UserMenu name="개발자" email="email@test.com" />
                         </div>
                     )}
-                    
+
                     {/* 모바일: 작성/수정일 때만 완료 버튼 */}
                     {isEditing && (
                         <button className="p-2 md:hidden text-sm font-semibold text-blue-600">
