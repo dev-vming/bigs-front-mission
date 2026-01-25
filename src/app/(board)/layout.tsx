@@ -1,6 +1,7 @@
 "use client";
 
 import Header from "@/components/common/Header";
+import Modal from "@/components/common/Modal";
 import { getBoardTitleByPath } from "@/lib/board/getBoardTitleByPath";
 import { usePathname } from "next/navigation";
 
@@ -22,6 +23,7 @@ export default function BoardLayout({
                 <h1 className="hidden md:block text-2xl font-bold mb-6">{title}</h1>
                 {children}
             </main>
+            <Modal />
         </div>
     );
 }
