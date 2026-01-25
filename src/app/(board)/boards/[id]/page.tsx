@@ -1,7 +1,3 @@
-export const metadata = {
-    title: "게시물 상세",
-};
-
 import CategoryBadge from "@/components/boards/CategoryBadge";
 interface BoardItem {
     id: number;
