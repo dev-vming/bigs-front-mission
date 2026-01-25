@@ -42,7 +42,7 @@ const boards: BoardItem[] = [
 export default function BoardsPage() {
     return (
         <div>
-            <div className="w-full px-4 py-2 flex items-center gap-4 border-b border-gray-300 text-xs font-semibold mb-1 text-gray-500">
+            <div className="w-full py-2 flex items-center gap-4 border-b border-gray-300 text-xs font-semibold mb-1 text-gray-500">
                 <span className="w-20 shrink-0">카테고리</span>
                 <span className="flex-1">제목</span>
                 <span className="w-18 md:w-40 shrink-0">작성일</span>
