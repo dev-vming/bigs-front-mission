@@ -4,6 +4,7 @@ import { FaAngleLeft } from "react-icons/fa";
 import UserMenu from "./UserMenu";
 import { useModalStore } from "@/stores/modalStore";
 import { useRouter } from "next/navigation";
+import { FaHouse } from "react-icons/fa6";
 
 interface HeaderProps {
     title: string;
@@ -24,10 +25,36 @@ export default function Header({ title }: HeaderProps) {
     const handleBack = () => {
         router.back();
     };
+    // 홈으로 가기 로직 처리
+    const handleHome = () => {
+        router.push('/boards')
+    }
 
     return (
         <header className="w-full border-b border-gray-200 bg-white">
             <div className="relative h-14 mx-auto px-4 flex items-center">
+                {/* PC: 왼쪽 영역 */}
+                <div className="hidden md:block p-2 cursor-pointer">
+                    <FaHouse
+                        className="w-5 h-5 text-gray-600 hover:text-gray-500"
+                        onClick={() => {
+                            if (isDetail) {
+                                handleHome();
+                                return;
+                            }
+                            if (isEditing) {
+                                setModal({
+                                    open: true,
+                                    title: "알림",
+                                    content:
+                                        "작성을 취소하시겠습니까? \n 작성 중인 내용이 저장되지 않습니다.",
+                                    onConfirm: handleHome,
+                                });
+                            }
+                        }}
+                    />
+                </div>
+
                 {/* MO: 왼쪽 영역 */}
                 {!isBoardList && (
                     <button
@@ -50,7 +77,7 @@ export default function Header({ title }: HeaderProps) {
                     </button>
                 )}
 
-                {/* 가운데 타이틀 (모바일 전용) */}
+                {/* MO: 가운데 타이틀 */}
                 <h1 className="absolute left-1/2 -translate-x-1/2 text-base font-semibold md:hidden">
                     {title}
                 </h1>
