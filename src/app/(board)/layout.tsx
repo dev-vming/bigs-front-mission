@@ -4,12 +4,13 @@ import Header from "@/components/common/Header";
 import Modal from "@/components/common/Modal";
 import { getBoardTitleByPath } from "@/lib/board/getBoardTitleByPath";
 import { usePathname } from "next/navigation";
+import AuthInitializer from "../AuthInitializer";
 
 export default function BoardLayout({
     children,
 }: {
     children: React.ReactNode;
-    }) {
+}) {
     // 현재 path 이름
     const pathname = usePathname();
 
@@ -17,13 +18,17 @@ export default function BoardLayout({
     const title = getBoardTitleByPath(pathname);
 
     return (
-        <div className="min-h-screen bg-white">
-            <Header title={title} />
-            <main className="max-w-5xl mx-auto px-4 py-6">
-                <h1 className="hidden md:block text-2xl font-bold mb-6">{title}</h1>
-                {children}
-            </main>
-            <Modal />
-        </div>
+        <AuthInitializer>
+            <div className="min-h-screen bg-white">
+                <Header title={title} />
+                <main className="max-w-5xl mx-auto px-4 py-6">
+                    <h1 className="hidden md:block text-2xl font-bold mb-6">
+                        {title}
+                    </h1>
+                    {children}
+                </main>
+                <Modal />
+            </div>
+        </AuthInitializer>
     );
 }
