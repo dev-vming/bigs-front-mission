@@ -1,21 +1,49 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useModalStore } from "@/stores/modalStore";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { boardSchema, BoardFormValues } from "@/schemas/boardScema";
+import { useForm, useWatch } from "react-hook-form";
+import { useBoardCategories } from "@/hooks/useBoardCategories";
 
-export default function BoardForm() {
+interface BoardFormProps {
+    onSubmit: (data: BoardFormValues) => void;
+    isPending: boolean;
+}
+
+export default function BoardForm({ onSubmit, isPending }: BoardFormProps) {
     // 라우터
     const router = useRouter();
-    // 업로드한 파일
-    const [file, setFile] = useState<File | null>(null);
+    
     // 모달 상태 수정
     const setModal = useModalStore((state) => state.setModal);
     // 뒤로 가기 로직 처리
     const handleBack = () => {
         router.back();
     };
+
+    // 셀렉트 박스 데이터
+    const { data: categories } = useBoardCategories();
+
+    // react-hook-form과 zod로 유효성 검증
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        control,
+        formState: { errors, isSubmitting },
+    } = useForm<BoardFormValues>({
+        resolver: zodResolver(boardSchema),
+    });
+
+    // 업로드한 파일
+    const file = useWatch({
+        control,
+        name: "file",
+    });
 
     // 미리보기 이미지
     const previewUrl = useMemo(() => {
@@ -32,7 +60,10 @@ export default function BoardForm() {
     }, [previewUrl]);
 
     return (
-        <form className="grid grid-cols-1 md:grid-cols-3 gap-x-3 gap-y-4">
+        <form
+            className="grid grid-cols-1 md:grid-cols-3 gap-x-3 gap-y-4"
+            onSubmit={handleSubmit(onSubmit)}
+        >
             {/* 제목 */}
             <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-900 mb-1">
@@ -41,8 +72,11 @@ export default function BoardForm() {
                 <input
                     className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm bg-white"
                     placeholder="제목"
+                    {...register("title")}
                 />
-                <p className="mt-1 min-h-4 text-xs text-red-600" />
+                <p className="mt-1 min-h-4 text-xs text-red-600">
+                    {errors.title?.message}
+                </p>
             </div>
 
             {/* 카테고리 */}
@@ -50,12 +84,21 @@ export default function BoardForm() {
                 <label className="block text-sm font-medium text-gray-900 mb-1">
                     카테고리
                 </label>
-                <select className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm bg-white h-9.5">
+                <select
+                    {...register("category")}
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm bg-white h-9.5"
+                >
                     <option value="">선택</option>
-                    <option value="free">자유</option>
-                    <option value="notice">공지</option>
+                    {categories &&
+                        Object.entries(categories).map(([key, label]) => (
+                            <option key={key} value={key}>
+                                {label}
+                            </option>
+                        ))}
                 </select>
-                <p className="mt-1 min-h-4 text-xs text-red-600" />
+                <p className="mt-1 min-h-4 text-xs text-red-600">
+                    {errors.category?.message}
+                </p>
             </div>
 
             {/* 첨부파일 */}
@@ -82,7 +125,11 @@ export default function BoardForm() {
                         className="hidden"
                         onChange={(e) => {
                             const selected = e.target.files?.[0];
-                            if (selected) setFile(selected);
+                            if (selected) {
+                                setValue("file", selected, {
+                                    shouldValidate: true,
+                                });
+                            }
                         }}
                     />
                 </label>
@@ -97,8 +144,6 @@ export default function BoardForm() {
                         className="mt-2 w-32 h-32 object-cover rounded-md border"
                     />
                 )}
-
-                <p className="mt-1 min-h-4 text-xs text-red-600" />
             </div>
 
             {/* 내용 */}
@@ -109,8 +154,11 @@ export default function BoardForm() {
                 <textarea
                     className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm bg-white h-60 resize-none"
                     placeholder="내용"
+                    {...register("content")}
                 />
-                <p className="mt-1 min-h-4 text-xs text-red-600" />
+                <p className="min-h-4 text-xs text-red-600">
+                    {errors.content?.message}
+                </p>
             </div>
 
             {/* 버튼 */}
@@ -119,17 +167,19 @@ export default function BoardForm() {
                     type="button"
                     className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300 cursor-pointer"
                     onClick={() =>
-                            setModal({
-                                open: true,
-                                title: "알림",
-                                content: '작성을 취소하시겠습니까? \n 작성 중인 내용이 저장되지 않습니다.',
-                                onConfirm: handleBack,
-                            })
-                        }
+                        setModal({
+                            open: true,
+                            title: "알림",
+                            content:
+                                "작성을 취소하시겠습니까? \n 작성 중인 내용이 저장되지 않습니다.",
+                            onConfirm: handleBack,
+                        })
+                    }
                 >
                     취소
                 </button>
                 <button
+                    disabled={isSubmitting || isPending}
                     type="submit"
                     className="px-4 py-2 rounded-md bg-gray-900 text-white hover:bg-gray-800 cursor-pointer"
                 >
