@@ -69,6 +69,7 @@ export default function BoardForm({
 
     return (
         <form
+            id="board-form"
             className="grid grid-cols-1 md:grid-cols-3 gap-x-3 gap-y-4"
             onSubmit={handleSubmit(onSubmit)}
         >
@@ -170,7 +171,7 @@ export default function BoardForm({
             </div>
 
             {/* 버튼 */}
-            <div className="md:col-span-3 flex justify-end gap-2">
+            <div className="hidden md:flex md:col-span-3 justify-end gap-2">
                 <button
                     type="button"
                     className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300 cursor-pointer"
