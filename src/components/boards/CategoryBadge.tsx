@@ -1,6 +1,7 @@
-interface CategoryBadgeProps {
-    category: "FREE" | "NOTICE" | "QNA" | "ETC";
-}
+"use client";
+
+import { useBoardCategories } from "@/hooks/useBoardCategories";
+import { BoardCategory } from "@/types/boards";
 
 const CATEGORY_STYLE: Record<string, string> = {
     FREE: "bg-blue-100 text-blue-600 ring-blue-500/10",
@@ -9,15 +10,22 @@ const CATEGORY_STYLE: Record<string, string> = {
     ETC: "bg-gray-100 text-gray-600 ring-gray-500/10",
 };
 
-export default function CategoryBadge({ category }: CategoryBadgeProps) {
+export default function CategoryBadge({
+    category,
+}: {
+    category: BoardCategory;
+}) {
+    const { data: categories } = useBoardCategories();
+
     const style =
-        CATEGORY_STYLE[category] ?? "bg-gray-100 text-gray-600 ring-gray-500/10";
+        CATEGORY_STYLE[category] ??
+        "bg-gray-100 text-gray-600 ring-gray-500/10";
 
     return (
         <span
             className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ${style}`}
         >
-            {category}
+            {categories?.[category] ?? category}
         </span>
     );
 }
