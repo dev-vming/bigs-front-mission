@@ -25,14 +25,25 @@ export default function Modal() {
                 {content && (
                     <div className="mb-4 whitespace-pre-line">{content}</div>
                 )}
-                <div className="flex justify-end gap-2">
-                    <button
-                        onClick={closeModal}
-                        className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300 cursor-pointer"
-                    >
-                        취소
-                    </button>
-                    {onConfirm && (
+
+                {!onConfirm && (
+                    <div className="flex justify-end gap-2">
+                        <button
+                            onClick={closeModal}
+                            className="px-4 py-2 rounded-md bg-gray-900 text-white hover:bg-gray-800 cursor-pointer"
+                        >
+                            확인
+                        </button>
+                    </div>
+                )}
+                {onConfirm && (
+                    <div className="flex justify-end gap-2">
+                        <button
+                            onClick={closeModal}
+                            className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300 cursor-pointer"
+                        >
+                            취소
+                        </button>
                         <button
                             onClick={() => {
                                 onConfirm();
@@ -42,8 +53,8 @@ export default function Modal() {
                         >
                             확인
                         </button>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
         </div>
     );
