@@ -20,6 +20,7 @@ export default function BoardsPage() {
         queryKey: ["boards", page],
         queryFn: () => boardsApi.getBoards(page, size),
         placeholderData: (previousData) => previousData,
+        enabled: page !== undefined && !isNaN(page),
     });
 
     if (isLoading) return <LoadingSpinner />;
