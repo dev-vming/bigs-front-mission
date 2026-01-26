@@ -12,12 +12,18 @@ import { useBoardCategories } from "@/hooks/useBoardCategories";
 interface BoardFormProps {
     onSubmit: (data: BoardFormValues) => void;
     isPending: boolean;
+    defaultValues?: BoardFormValues;
+    defaultImageUrl?: string | null;
 }
 
-export default function BoardForm({ onSubmit, isPending }: BoardFormProps) {
+export default function BoardForm({
+    onSubmit,
+    isPending,
+    defaultValues,
+    defaultImageUrl,
+}: BoardFormProps) {
     // 라우터
     const router = useRouter();
-    
     // 모달 상태 수정
     const setModal = useModalStore((state) => state.setModal);
     // 뒤로 가기 로직 처리
@@ -37,6 +43,7 @@ export default function BoardForm({ onSubmit, isPending }: BoardFormProps) {
         formState: { errors, isSubmitting },
     } = useForm<BoardFormValues>({
         resolver: zodResolver(boardSchema),
+        defaultValues,
     });
 
     // 업로드한 파일
@@ -47,9 +54,10 @@ export default function BoardForm({ onSubmit, isPending }: BoardFormProps) {
 
     // 미리보기 이미지
     const previewUrl = useMemo(() => {
-        if (!file) return undefined;
-        return URL.createObjectURL(file);
-    }, [file]);
+        if (file) return URL.createObjectURL(file);
+        if (defaultImageUrl)
+            return `${process.env.NEXT_PUBLIC_API_URL}${defaultImageUrl}`;
+    }, [file, defaultImageUrl]);
 
     useEffect(() => {
         return () => {

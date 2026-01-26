@@ -106,7 +106,7 @@ export default function BoardDetail({ board }: BoardDetailProps) {
                 {board.imageUrl && (
                     <div className="w-full">
                         <Image
-                            src={`https://front-mission.bigs.or.kr${board.imageUrl}`}
+                            src={`${process.env.NEXT_PUBLIC_API_URL}${board.imageUrl}`}
                             alt={board.title}
                             width={800}
                             height={600}
