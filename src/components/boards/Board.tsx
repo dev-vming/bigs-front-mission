@@ -2,21 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import CategoryBadge from "@/components/boards/CategoryBadge";
+import { BoardItem } from "@/types/boards";
 
-
-interface BoardItemProps {
-    id: number;
-    title: string;
-    category: "FREE" | "NOTICE" | "QNA" | "ETC";
-    createdAt: string;
-}
-
-export default function BoardItem({
+export default function Board({
     id,
     title,
     category,
     createdAt,
-}: BoardItemProps) {
+}: BoardItem) {
     // 라우터
     const router = useRouter();
 
