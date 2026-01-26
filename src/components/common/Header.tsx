@@ -5,6 +5,7 @@ import UserMenu from "./UserMenu";
 import { useModalStore } from "@/stores/modalStore";
 import { useRouter } from "next/navigation";
 import { FaHouse } from "react-icons/fa6";
+import { useAuthStore } from "@/stores/authStore";
 
 interface HeaderProps {
     title: string;
@@ -13,6 +14,10 @@ interface HeaderProps {
 export default function Header({ title }: HeaderProps) {
     // 라우터
     const router = useRouter();
+    // 현재 로그인 한 유저
+    const user = useAuthStore((state) => state.user);
+    // 로그아웃 로직
+    const logout = useAuthStore((state) => state.logout);
     // title이 게시판인지 확인
     const isBoardList = title === "게시판";
     // title이 수정, 등록 상태인지 확인
@@ -86,13 +91,13 @@ export default function Header({ title }: HeaderProps) {
                 <div className="ml-auto flex items-center">
                     {/* PC: 항상 유저 아이콘 */}
                     <div className="hidden md:block p-2">
-                        <UserMenu name="개발자" email="email@test.com" />
+                        <UserMenu user={user} onLogout={logout} />
                     </div>
 
                     {/* MO: 게시판에서만 유저 아이콘 */}
                     {isBoardList && (
                         <div className="p-2 md:hidden">
-                            <UserMenu name="개발자" email="email@test.com" />
+                            <UserMenu user={user} onLogout={logout} />
                         </div>
                     )}
 
