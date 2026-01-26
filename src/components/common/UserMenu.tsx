@@ -1,15 +1,21 @@
 "use client";
 
 import { useModalStore } from "@/stores/modalStore";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { FaUser } from "react-icons/fa";
 
 interface UserMenuProps {
-    name: string;
-    email: string;
+    user: {
+        name: string;
+        username: string;
+    } | null;
+    onLogout: () => void;
 }
 
-export default function UserMenu({ name, email }: UserMenuProps) {
+export default function UserMenu({ user, onLogout }: UserMenuProps) {
+    // 라우터
+    const router = useRouter();
     // 모달 상태 수정
     const setModal = useModalStore((state) => state.setModal);
     // 팝업 열림 닫힘 상태
@@ -19,7 +25,8 @@ export default function UserMenu({ name, email }: UserMenuProps) {
 
     // 로그아웃 로직 처리
     const handleLogout = () => {
-        console.log("로그아웃");
+        onLogout();
+        router.replace('/login');
     };
 
     // 외부 클릭 시 닫힘 처리
@@ -57,9 +64,9 @@ export default function UserMenu({ name, email }: UserMenuProps) {
                     <div className="w-56 rounded-lg border border-gray-200 bg-white shadow-md">
                         <div className="px-4 py-3 border-b border-gray-100">
                             <p className="text-sm font-medium text-gray-900">
-                                {name}
+                                {user && user.name}
                             </p>
-                            <p className="text-xs text-gray-500">{email}</p>
+                            <p className="text-xs text-gray-500">{user && user.username}</p>
                         </div>
                         <button
                             onClick={() =>
