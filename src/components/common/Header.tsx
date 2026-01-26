@@ -32,8 +32,8 @@ export default function Header({ title }: HeaderProps) {
     };
     // 홈으로 가기 로직 처리
     const handleHome = () => {
-        router.push('/boards')
-    }
+        router.push("/boards");
+    };
 
     return (
         <header className="w-full border-b border-gray-200 bg-white">
@@ -103,7 +103,11 @@ export default function Header({ title }: HeaderProps) {
 
                     {/* MO: 작성/수정일 때만 완료 버튼 */}
                     {isEditing && (
-                        <button className="p-2 md:hidden text-sm font-semibold text-blue-600">
+                        <button
+                            type="submit"
+                            form="board-form"
+                            className="p-2 md:hidden text-sm font-semibold text-blue-600"
+                        >
                             완료
                         </button>
                     )}
