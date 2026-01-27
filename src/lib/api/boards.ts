@@ -38,6 +38,10 @@ export const boardsApi = {
                     headers: { "Content-Type": "multipart/form-data" },
                 },
             );
+            // response.data가 없거나 undefined인 경우
+            if (!response || !response.data) {
+                throw new Error("서버로부터 응답 데이터를 받지 못했습니다.");
+            }
             return response.data;
         } catch (error: unknown) {
             if (axios.isAxiosError<{ message: string }>(error)) {
@@ -73,6 +77,12 @@ export const boardsApi = {
         const response = await api.get<BoardDetailResponse>(
             `/boards/${boardId}`,
         );
+
+        // response.data가 없거나 undefined인 경우
+        if (!response || !response.data) {
+            throw new Error("서버로부터 응답 데이터를 받지 못했습니다.");
+        }
+
         return response.data;
     },
 
@@ -81,12 +91,24 @@ export const boardsApi = {
         const response = await api.get<BoardsResponse>("/boards", {
             params: { page, size },
         });
+
+        // response.data가 없거나 undefined인 경우
+        if (!response || !response.data) {
+            throw new Error("서버로부터 응답 데이터를 받지 못했습니다.");
+        }
+
         return response.data;
     },
 
     // 카테고리조회
     getCategories: async (): Promise<BoardCategoryMap> => {
         const response = await api.get<BoardCategoryMap>("/boards/categories");
+
+        // response.data가 없거나 undefined인 경우
+        if (!response || !response.data) {
+            throw new Error("서버로부터 응답 데이터를 받지 못했습니다.");
+        }
+
         return response.data;
     },
 };

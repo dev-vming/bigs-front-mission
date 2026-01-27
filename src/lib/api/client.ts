@@ -1,4 +1,8 @@
-import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import axios, {
+    AxiosError,
+    AxiosResponse,
+    InternalAxiosRequestConfig,
+} from "axios";
 import { useAuthStore } from "@/stores/authStore";
 import { authApi } from "./auth";
 
@@ -8,21 +12,30 @@ export const api = axios.create({
 
 // 실패한 요청을 저장하는 큐의 타입
 interface FailedRequest {
-    resolve: (token: string) => void;
+    request: InternalAxiosRequestConfig;
+    resolve: (value: AxiosResponse) => void;
     reject: (error: AxiosError) => void;
 }
 
 let isRefreshing = false;
 let failedQueue: FailedRequest[] = [];
 
-const processQueue = (token: string | null, error?: AxiosError) => {
-    failedQueue.forEach((req) => {
-        if (token) {
-            req.resolve(token);
-        } else {
-            req.reject(error || new axios.AxiosError("Token refresh failed"));
+// refresh 완료 후 큐 처리
+const processQueue = async (token: string | null, error?: AxiosError) => {
+    for (const { request, resolve, reject } of failedQueue) {
+        if (!token) {
+            reject(error || new AxiosError("Token refresh failed"));
+            continue;
         }
-    });
+
+        try {
+            request.headers.Authorization = `Bearer ${token}`;
+            const response = await api(request);
+            resolve(response);
+        } catch (err) {
+            reject(err as AxiosError);
+        }
+    }
     failedQueue = [];
 };
 
@@ -42,9 +55,7 @@ api.interceptors.request.use(
 
         return config;
     },
-    (error) => {
-        return Promise.reject(error);
-    },
+    (error) => Promise.reject(error),
 );
 
 // Response 인터셉터: 401 에러 시 토큰 갱신
@@ -54,7 +65,7 @@ api.interceptors.response.use(
         const originalRequest = error.config as InternalAxiosRequestConfig & {
             _retry?: boolean;
         };
-
+        
         // 401이 아니거나, 인증 API 자체의 에러면 그냥 reject
         if (
             error.response?.status !== 401 ||
@@ -72,12 +83,10 @@ api.interceptors.response.use(
 
         // 이미 리프레시 중이면 큐에 추가
         if (isRefreshing) {
-            return new Promise<string>((resolve, reject) => {
+            return new Promise<AxiosResponse>((resolve, reject) => {
                 failedQueue.push({
-                    resolve: (token: string) => {
-                        originalRequest.headers.Authorization = `Bearer ${token}`;
-                        resolve(api(originalRequest));
-                    },
+                    request: originalRequest,
+                    resolve,
                     reject,
                 });
             });
@@ -90,10 +99,11 @@ api.interceptors.response.use(
         if (!refreshToken) {
             // 리프레시 토큰이 없으면 로그아웃
             useAuthStore.getState().logout();
-            processQueue(null, error);
+            await processQueue(null, error);
             if (typeof window !== "undefined") {
                 window.location.href = "/login";
             }
+            isRefreshing = false;
             return Promise.reject(error);
         }
 
@@ -108,15 +118,16 @@ api.interceptors.response.use(
             // 새 토큰 저장
             useAuthStore.getState().setToken(newAccessToken, newRefreshToken);
 
-            // 대기 중인 요청들 처리
-            processQueue(newAccessToken);
+            // 큐 처리
+            await processQueue(newAccessToken);
 
             // 원래 요청 재시도
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
             return api(originalRequest);
         } catch (refreshError) {
             // 리프레시 실패 시 로그아웃
-            processQueue(null, refreshError as AxiosError);
+            await processQueue(null, refreshError as AxiosError);
             useAuthStore.getState().logout();
 
             if (typeof window !== "undefined") {
