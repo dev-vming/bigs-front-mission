@@ -8,19 +8,22 @@ import NewBoardButton from "@/components/boards/NewBoardButton";
 import EmptyBoard from "@/components/boards/EmptyBoard";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import ErrorMessage from "@/components/common/ErrorMessage";
+import Pagination from "@/components/boards/Pagination";
 
 export default function BoardsPage() {
     // params
     const searchParams = useSearchParams();
-    // page 기본 값은 0
-    const page = Number(searchParams.get("page") ?? 0);
-    const size = 10;
+    // 페이지네이션 표시용 (1부터 시작)
+    const displayPage = Number(searchParams.get("page") ?? 1);
+    // API 요청용 (0부터 시작)
+    const page = displayPage - 1; 
+    const size = 12;
 
     const { data, isLoading, isError, refetch } = useQuery({
         queryKey: ["boards", page],
         queryFn: () => boardsApi.getBoards(page, size),
         placeholderData: (previousData) => previousData,
-        enabled: page !== undefined && !isNaN(page),
+        enabled: page >= 0 && !isNaN(page),
     });
 
     if (isLoading) return <LoadingSpinner />;
@@ -40,6 +43,7 @@ export default function BoardsPage() {
                 <span className="flex-1">제목</span>
                 <span className="w-18 md:w-40 shrink-0">작성일</span>
             </div>
+            
             {/* 게시물 영역 */}
             {data.content.map((board) => (
                 <Board
@@ -50,8 +54,19 @@ export default function BoardsPage() {
                     createdAt={board.createdAt}
                 />
             ))}
+            
             {/* 게시판 데이터가 없을 때 보여줄 영역 */}
             {data.empty && <EmptyBoard />}
+            
+            {/* 페이지네이션 영역 */}
+            <Pagination
+                currentPage={displayPage}
+                totalPages={data.totalPages}
+                isFirst={data.first}
+                isLast={data.last}
+                size={size}
+            />
+            
             {/* 게시물 작성 버튼 */}
             <NewBoardButton />
         </div>
