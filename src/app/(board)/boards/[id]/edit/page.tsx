@@ -1,6 +1,6 @@
 "use client";
 
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter, useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import BoardForm from "@/components/boards/BoardForm";
@@ -15,8 +15,6 @@ export default function BoardEditPage() {
     // 게시물 id
     const params = useParams();
     const boardId = Number(params.id);
-    // 쿼리 클라이언트
-    const queryClient = useQueryClient();
 
     // 기존 글 데이터 불러오기
     const { data, isLoading, refetch } = useQuery({
