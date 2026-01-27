@@ -1,3 +1,4 @@
+import axios from "axios";
 import { api } from "./client";
 import {
     BoardCategoryMap,
@@ -28,15 +29,27 @@ const createBoardFormData = (data: BoardFormData) => {
 export const boardsApi = {
     // 글 쓰기
     createBoard: async (data: BoardFormData): Promise<CreateBoardResponse> => {
-        const formData = createBoardFormData(data);
-        const response = await api.post<CreateBoardResponse>(
-            "/boards",
-            formData,
-            {
-                headers: { "Content-Type": "multipart/form-data" },
-            },
-        );
-        return response.data;
+        try {
+            const formData = createBoardFormData(data);
+            const response = await api.post<CreateBoardResponse>(
+                "/boards",
+                formData,
+                {
+                    headers: { "Content-Type": "multipart/form-data" },
+                },
+            );
+            return response.data;
+        } catch (error: unknown) {
+            if (axios.isAxiosError<{ message: string }>(error)) {
+                const message = error.response?.data?.message ?? "";
+
+                if (message.includes("MaxUploadSizeExceededException")) {
+                    throw new Error("첨부파일 용량이 너무 큽니다.");
+                }
+            }
+
+            throw new Error("게시물 작성에 실패했습니다.");
+        }
     },
 
     // 글 수정
