@@ -40,7 +40,6 @@ export default function BoardEditPage() {
                 boardId,
             ),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["board", boardId] });
             router.replace(`/boards/${boardId}`);
         },
     });

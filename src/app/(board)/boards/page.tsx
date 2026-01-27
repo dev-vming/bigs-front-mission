@@ -19,14 +19,14 @@ export default function BoardsPage() {
     const page = displayPage - 1; 
     const size = 12;
 
-    const { data, isLoading, isError, refetch } = useQuery({
+    const { data, isLoading, isFetching ,isError, refetch } = useQuery({
         queryKey: ["boards", page],
         queryFn: () => boardsApi.getBoards(page, size),
         placeholderData: (previousData) => previousData,
         enabled: page >= 0 && !isNaN(page),
     });
 
-    if (isLoading) return <LoadingSpinner />;
+    if (isLoading || isFetching) return <LoadingSpinner />;
     if (isError || !data)
         return (
             <ErrorMessage
