@@ -22,7 +22,6 @@ export default function BoardsPage() {
     const { data, isLoading, isFetching ,isError, refetch } = useQuery({
         queryKey: ["boards", page],
         queryFn: () => boardsApi.getBoards(page, size),
-        placeholderData: (previousData) => previousData,
         enabled: page >= 0 && !isNaN(page),
     });
 
