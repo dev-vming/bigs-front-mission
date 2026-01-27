@@ -12,13 +12,13 @@ export default function BoardDetailPage() {
     const params = useParams();
     const boardId = Number(params.id);
 
-    const { data, isLoading, isError, refetch } = useQuery({
+    const { data, isLoading, isError, isFetching,refetch } = useQuery({
         queryKey: ["board", boardId],
         queryFn: () => boardsApi.getBoardDetail(boardId),
         enabled: !isNaN(boardId),
     });
 
-    if (isLoading) return <LoadingSpinner />;
+    if (isLoading || isFetching) return <LoadingSpinner />;
     if (isError || !data)
         return (
             <ErrorMessage
