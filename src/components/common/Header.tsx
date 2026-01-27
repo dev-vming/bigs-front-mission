@@ -43,7 +43,7 @@ export default function Header({ title }: HeaderProps) {
                     <FaHouse
                         className="w-5 h-5 text-gray-600 hover:text-gray-500"
                         onClick={() => {
-                            if (isDetail) {
+                            if (isBoardList || isDetail) {
                                 handleHome();
                                 return;
                             }
