@@ -118,12 +118,12 @@ export default function BoardForm({
 
                 <label className="flex items-center gap-3 text-sm border rounded-md border-gray-300 cursor-pointer">
                     {/* 버튼 */}
-                    <span className="rounded-md bg-gray-900 px-3 py-2 text-white">
+                    <span className="rounded-md bg-gray-900 px-3 py-2 text-white shrink-0">
                         파일 선택
                     </span>
 
                     {/* 파일명 */}
-                    <span className="truncate text-gray-600">
+                    <span className="truncate text-gray-600 flex-1 min-w-0">
                         {file ? file.name : "선택된 파일 없음"}
                     </span>
 
@@ -161,7 +161,7 @@ export default function BoardForm({
                     내용
                 </label>
                 <textarea
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm bg-white h-60 resize-none"
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm bg-white md:h-60 h-40 resize-none"
                     placeholder="내용"
                     {...register("content")}
                 />
