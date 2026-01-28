@@ -45,10 +45,17 @@ export const boardsApi = {
             return response.data;
         } catch (error: unknown) {
             if (axios.isAxiosError<{ message: string }>(error)) {
+                const status = error.response?.status;
                 const message = error.response?.data?.message ?? "";
 
                 if (message.includes("MaxUploadSizeExceededException")) {
                     throw new Error("첨부파일 용량이 너무 큽니다.");
+                }
+
+                if (status === 500) {
+                    throw new Error(
+                        "게시물 작성에 실패했습니다. 이미지 파일을 확인해주세요.",
+                    );
                 }
             }
 
@@ -61,10 +68,24 @@ export const boardsApi = {
         data: BoardFormData,
         boardId: number,
     ): Promise<void> => {
-        const formData = createBoardFormData(data);
-        await api.patch(`/boards/${boardId}`, formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-        });
+        try {
+            const formData = createBoardFormData(data);
+            await api.patch(`/boards/${boardId}`, formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+        } catch (error: unknown) {
+            if (axios.isAxiosError<{ message: string }>(error)) {
+                const message = error.response?.data?.message ?? "";
+
+                if (message.includes("MaxUploadSizeExceededException")) {
+                    throw new Error("첨부파일 용량이 너무 큽니다.");
+                }
+            }
+
+            throw new Error(
+                "게시물 수정에 실패했습니다. 이미지 파일을 다시 확인해주세요.",
+            );
+        }
     },
 
     // 글 삭제
@@ -74,16 +95,30 @@ export const boardsApi = {
 
     // 글 상세조회
     getBoardDetail: async (boardId: number): Promise<BoardDetailResponse> => {
-        const response = await api.get<BoardDetailResponse>(
-            `/boards/${boardId}`,
-        );
+        try {
+            const response = await api.get<BoardDetailResponse>(
+                `/boards/${boardId}`,
+            );
 
-        // response.data가 없거나 undefined인 경우
-        if (!response || !response.data) {
-            throw new Error("서버로부터 응답 데이터를 받지 못했습니다.");
+            // response.data가 없거나 undefined인 경우
+            if (!response || !response.data) {
+                throw new Error("서버로부터 응답 데이터를 받지 못했습니다.");
+            }
+
+            return response.data;
+        } catch (error: unknown) {
+            if (axios.isAxiosError<{ message: string }>(error)) {
+                const status = error.response?.status;
+
+                if (status === 404) {
+                    throw new Error(
+                        "이미 삭제된 게시물 입니다.",
+                    );
+                }
+            }
+
+            throw new Error("게시물 조회에 실패했습니다.");
         }
-
-        return response.data;
     },
 
     // 글 목록조회

@@ -8,6 +8,7 @@ import { boardsApi } from "@/lib/api/boards";
 import { BoardFormValues } from "@/schemas/boardScema";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import ErrorMessage from "@/components/common/ErrorMessage";
+import { useModalStore } from "@/stores/modalStore";
 
 export default function BoardEditPage() {
     // 라우터
@@ -15,6 +16,8 @@ export default function BoardEditPage() {
     // 게시물 id
     const params = useParams();
     const boardId = Number(params.id);
+    // 모달 상태 수정
+    const setModal = useModalStore((state) => state.setModal);
 
     // 기존 글 데이터 불러오기
     const { data, isLoading, refetch } = useQuery({
@@ -39,6 +42,15 @@ export default function BoardEditPage() {
             ),
         onSuccess: () => {
             router.replace(`/boards/${boardId}`);
+        },
+        onError: (error) => {
+            if (error.message) {
+                setModal({
+                    open: true,
+                    title: "알림",
+                    content: `${error.message}`,
+                });
+            }
         },
     });
 
