@@ -4,9 +4,8 @@
 
 ---
 
-## 🔗 데모 / API 정보
+## 🔗 API 정보
 
-* **배포 주소 (Vercel)** : [https://bigs-front-mission-lac.vercel.app](https://bigs-front-mission-lac.vercel.app)
 * **API Base URL** : https://front-mission.bigs.or.kr (환경 변수 `NEXT_PUBLIC_API_URL`을 통해 관리)
 
 ---
