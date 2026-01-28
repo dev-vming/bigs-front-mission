@@ -8,7 +8,7 @@ export default function ErrorMessage({
     onRetry,
 }: ErrorMessageProps) {
     return (
-        <div className="py-80 flex flex-col items-center gap-4 text-center">
+        <div className="py-60 flex flex-col items-center gap-4 text-center">
             <p className="text-sm text-gray-600">{message}</p>
 
             {onRetry && (

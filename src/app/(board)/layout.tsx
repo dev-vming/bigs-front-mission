@@ -19,7 +19,7 @@ export default function BoardLayout({
 
     return (
         <AuthInitializer>
-            <div className="min-h-screen bg-white">
+            <div className="min-h-dvh bg-white">
                 <Header title={title} />
                 <main className="max-w-5xl mx-auto px-4 py-6">
                     <h1 className="hidden md:block text-2xl font-bold mb-6">
