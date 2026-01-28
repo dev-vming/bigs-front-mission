@@ -74,6 +74,11 @@ api.interceptors.response.use(
             // 새 토큰 저장
             useAuthStore.getState().setToken(newAccessToken, newRefreshToken);
 
+
+            // 새로운 토큰 담은 기존 요청 리턴
+            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
+            return api(originalRequest);
         } catch (refreshError) {
             // 리프레시 실패 시 로그아웃
             useAuthStore.getState().logout();
